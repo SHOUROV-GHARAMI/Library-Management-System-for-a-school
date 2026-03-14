@@ -1,0 +1,69 @@
+@model IEnumerable<LibraryManagement.Models.Author>
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0"><i class="bi bi-people me-2"></i>Authors</h2>
+        <small class="text-muted">@Model.Count() author(s) registered</small>
+    </div>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-person-plus me-1"></i>Add Author
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-people fs-1 d-block mb-2"></i>
+        No authors yet. <a asp-action="Create" class="alert-link">Add the first one!</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Date of Birth</th>
+                    <th>Books</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int row = 1; }
+                @foreach (var author in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@row</td>
+                        <td><strong>@author.FullName</strong></td>
+                        <td>
+                            @(author.DateOfBirth.HasValue
+                                ? author.DateOfBirth.Value.ToString("MMMM dd, yyyy")
+                                : "—")
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">
+                                @author.Books.Count book(s)
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@author.Id"
+                               class="btn btn-sm btn-outline-info me-1">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@author.Id"
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    row++;
+                }
+            </tbody>
+        </table>
+    </div>
+}

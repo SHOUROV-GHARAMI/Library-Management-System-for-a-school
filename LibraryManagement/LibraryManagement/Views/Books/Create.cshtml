@@ -1,0 +1,114 @@
+@model LibraryManagement.Models.Book
+@{
+    ViewData["Title"] = "Add Book";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Add New Book</h2>
+        <small class="text-muted">Fill in the details below</small>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to List
+    </a>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-book me-1"></i> Book Details
+            </div>
+            <div class="card-body p-4">
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger mb-3"></div>
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold"></label>
+                        <input asp-for="Title" class="form-control"
+                               placeholder="e.g. Introduction to Algorithms" maxlength="150" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="mb-3">
+                        <label asp-for="ISBN" class="form-label fw-semibold"></label>
+                        <input asp-for="ISBN" class="form-control"
+                               placeholder="13-digit ISBN" maxlength="13" />
+                        <div class="form-text">Must be exactly 13 characters.</div>
+                        <span asp-validation-for="ISBN" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Publication Year -->
+                    <div class="mb-3">
+                        <label asp-for="PublicationYear" class="form-label fw-semibold"></label>
+                        <input asp-for="PublicationYear" class="form-control"
+                               type="number" placeholder="e.g. 2023"
+                               min="1000" max="9999" />
+                        <span asp-validation-for="PublicationYear" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Total Copies -->
+                    <div class="mb-3">
+                        <label asp-for="TotalCopies" class="form-label fw-semibold"></label>
+                        <input asp-for="TotalCopies" class="form-control"
+                               type="number" min="1" id="totalCopies" />
+                        <div class="form-text">Must be at least 1.</div>
+                        <span asp-validation-for="TotalCopies" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Available Copies -->
+                    <div class="mb-3">
+                        <label asp-for="AvailableCopies" class="form-label fw-semibold"></label>
+                        <input asp-for="AvailableCopies" class="form-control"
+                               type="number" min="0" id="availableCopies" />
+                        <div class="form-text">Must equal Total Copies when creating.</div>
+                        <span asp-validation-for="AvailableCopies" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Author dropdown -->
+                    <div class="mb-4">
+                        <label asp-for="AuthorId" class="form-label fw-semibold">Author</label>
+                        <select asp-for="AuthorId" asp-items="ViewBag.AuthorId"
+                                class="form-select">
+                            <option value="">-- Select Author --</option>
+                        </select>
+                        <span asp-validation-for="AuthorId" class="text-danger small"></span>
+                        <div class="form-text">
+                            Don't see the author?
+                            <a asp-controller="Authors" asp-action="Create"
+                               target="_blank">Add a new author</a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-check-circle me-1"></i>Create Book
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        // Auto-sync AvailableCopies when TotalCopies changes (helper UX)
+        document.getElementById('totalCopies').addEventListener('input', function () {
+            document.getElementById('availableCopies').value = this.value;
+        });
+    </script>
+}
